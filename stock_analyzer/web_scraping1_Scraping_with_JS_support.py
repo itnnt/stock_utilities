@@ -1,4 +1,3 @@
-
 from bs4 import BeautifulSoup
 import dryscrape
 import time
@@ -21,7 +20,7 @@ def watToWaitComponentLoaded(session, waifor):
 
 def watToWait(session):
     soup = BeautifulSoup(session.body(), 'lxml')
-    column = soup.findAll('td', {'class':'n'})
+    column = soup.findAll('td', {'class': 'n'})
     tables = soup.find('table', attrs={'id': 'tblOverviewSummary'})
     if column and tables:
         return True
@@ -77,7 +76,7 @@ def convert_string_to_numeric(val_str):
     return val
 
 
-stockcode= ('VIC', 'http://ezsearch.fpts.com.vn/Services/EzData/default2.aspx?language=VN&s=229')
+stockcode = ('VIC', 'http://ezsearch.fpts.com.vn/Services/EzData/default2.aspx?language=VN&s=229')
 
 session = dryscrape.Session()
 session.visit(stockcode[1])
@@ -99,7 +98,7 @@ if __name__ == '__main__':
     rows = []
     for d in data:
         for r in f(d, 2):
-            row = {'CODE': stockcode[0], 'DESCRIPTION': r[0], 'VALUE': convert_string_to_numeric(r[1]), 'TYPE':'TONGQUAN', 'NOTE':'N/A'}
+            row = [stockcode[0], r[0], convert_string_to_numeric(r[1]), 'TONGQUAN', 'N/A']
             rows.append(row)
 
     print('parse company name')
@@ -112,14 +111,12 @@ if __name__ == '__main__':
     # thong tin tai chinh co ban
     updateto = parse_by_id(soup, '_ctl0_CenterInfo1_lblBalanceDate')
     print(updateto)
-    data = parse_tr_by_class(soup, ['DgrItemStyle','DgrAlternatingItemStyle'])
+    data = parse_tr_by_class(soup, ['DgrItemStyle', 'DgrAlternatingItemStyle'])
     for d in data:
         if all(e for e in d):
-            row = {'CODE': stockcode[0], 'DESCRIPTION': d[0], 'VALUE': convert_string_to_numeric(d[1]), 'TYPE': 'CHISOTAICHINHCOBAN', 'NOTE': updateto}
+            row = [stockcode[0], d[0], convert_string_to_numeric(d[1]), 'CHISOTAICHINHCOBAN', updateto]
             rows.append(row)
 
-
-    data_access.insert_or_replace(data_access.connection, 'FPTS', rows)
+    data_access.insert_or_replace(data_access.connection, 'FPTS', rows[0].keys(), rows)
     data_access.connection.commit()
     data_access.connection.close()
-
