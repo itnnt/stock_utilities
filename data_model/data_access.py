@@ -26,7 +26,7 @@ def insert_or_replace(connection, table_name, col_names, rows):
     :param rows: list[list] or list[tuple]
     :return:
     """
-    field_names = ','.join(c.upper() for c in col_names)
+    field_names = ','.join(c for c in col_names)
     placeholders = ','.join('?' for i in col_names)
     sql = '''
            insert or replace into {0} ({1})
@@ -36,6 +36,27 @@ def insert_or_replace(connection, table_name, col_names, rows):
     cursor.executemany(sql, rows)
     cursor.close()
     return
+
+
+def insert(connection, table_name, col_names, rows):
+    """
+    :param connection:
+    :param table_name:
+    :param col_names: list or tuple
+    :param rows: list[list] or list[tuple]
+    :return:
+    """
+    field_names = ','.join(c for c in col_names)
+    placeholders = ','.join('?' for i in col_names)
+    sql = '''
+           insert into {0} ({1})
+           values ({2})
+       '''.format(table_name, field_names, placeholders)
+    cursor = connection.cursor()
+    cursor.executemany(sql, rows)
+    cursor.close()
+    return
+
 
 def get_stock_setting(table_name, selected_columns):
     sql = 'select {0} from {1}'.format(selected_columns, table_name)
