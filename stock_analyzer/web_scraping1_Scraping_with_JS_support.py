@@ -76,21 +76,23 @@ def convert_string_to_numeric(val_str):
     return val
 
 
-stockcode = ('VIC', 'http://ezsearch.fpts.com.vn/Services/EzData/default2.aspx?language=VN&s=229')
 
-session = dryscrape.Session()
-session.visit(stockcode[1])
-
-# wait for full page loaded
-# time.sleep(5)
-session.wait_for(lambda: watToWait(session))
-
-response = session.body()
-# print(response)
-soup = BeautifulSoup(response, 'lxml')
-# print(soup.prettify())
 
 if __name__ == '__main__':
+    stockcode = ('VIC', 'http://ezsearch.fpts.com.vn/Services/EzData/default2.aspx?language=VN&s=229')
+
+    session = dryscrape.Session()
+    session.visit(stockcode[1])
+
+    # wait for full page loaded
+    # time.sleep(5)
+    session.wait_for(lambda: watToWait(session))
+
+    response = session.body()
+    # print(response)
+    soup = BeautifulSoup(response, 'lxml')
+    # print(soup.prettify())
+
     # use soup.findAll("table") instead of find() and decompose() and nothing gets destroyed/destructed.
     print('parse tblOverviewSummary')
     data = parse_table(soup, 'tblOverviewSummary')

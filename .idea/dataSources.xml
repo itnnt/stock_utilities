@@ -5,7 +5,7 @@
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/data_model/stock_data.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:/media/sf_virtual_os_shared/stock_analyzer/stock_data.db</jdbc-url>
     </data-source>
   </component>
 </project>

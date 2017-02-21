@@ -15,8 +15,6 @@ def update(stock, year, url):
     :return: dataframe
     """
     session = dryscrape.Session()
-    # we don't need images
-    session.set_attribute('auto_load_images', False)
     session.visit(url)
 
     # wait for full page loaded
@@ -56,34 +54,26 @@ def update(stock, year, url):
 
 
 if __name__ == '__main__':
-    year = 2016
-    cafef_stocks = data_access.get_stock_setting('CAFEF_SETTING', 'STOCK,NAME,LINK,TYPE')
-    for st in cafef_stocks:
-        if st['TYPE'] == 'CAN_DOI_KE_TOAN':
-            can_doi_ke_toandf = update(st['STOCK'], year, st['LINK'].format(year))
-            data_access.insert_or_replace(data_access.connection, 'CAFEF_CAN_DOI_KE_TOAN', can_doi_ke_toandf.columns.values, can_doi_ke_toandf.values.tolist())
-        if st['TYPE'] == 'KET_QUA_KINH_DOANH':
-            can_doi_ke_toandf = update(st['STOCK'], year, st['LINK'].format(year))
-            data_access.insert_or_replace(data_access.connection, 'CAFEF_KET_QUA_KINH_DOANH',
-                                          can_doi_ke_toandf.columns.values, can_doi_ke_toandf.values.tolist())
-
-    data_access.connection.commit()
-    data_access.connection.close()
-
-
-    # THAM KHAO SUBMIT FORM ---------------------------------------------------------------------------------------------------
-    # session = dryscrape.Session(base_url='http://cafef.vn')
-    # # we don't need images
-    # session.set_attribute('auto_load_images', False)
-    # session.visit('/')
-    # # session.wait_for(lambda: web_scraping1.watToWaitComponentLoaded(session, waifor=[('span', {'class': 's-submit'}), ]))
+    # stock = 'VNH'
+    # year = 2016
+    # url = 'http://s.cafef.vn/bao-cao-tai-chinh/{0}/BSheet/{1}/4/0/0/ket-qua-hoat-dong-kinh-doanh-tap-doan-vingroup-cong-ty-co-phan.chn'
+    # can_doi_ke_toan = update(stock, year, url.format(stock, year))
     #
-    #
-    # q = session.at_xpath('//*[@id="CafeF_SearchKeyword_Company"]')
-    # q.set('VNH')
-    # # q.form().submit()
-    # submitbutton = session.at_xpath('//*[@class="s-submit"]')
-    # submitbutton.click()
-    #
-    # print(session.body())
-    # print(session.base_url)
+    # data_access.insert_or_replace(data_access.connection, 'CAFEF_CAN_DOI_KE_TOAN', can_doi_ke_toan.columns.values, can_doi_ke_toan.values.tolist())
+    # data_access.connection.commit()
+    # data_access.connection.close()
+
+    session = dryscrape.Session(base_url='http://ezsearch.fpts.com.vn/Services/EzData/default2.aspx')
+    # we don't need images
+    session.set_attribute('auto_load_images', False)
+    session.visit('?s=306')
+    session.wait_for(lambda: web_scraping1.watToWait(session))
+
+    #########################################################
+    response = session.body()
+    soup = BeautifulSoup(response, 'lxml')
+    print(soup.prettify())
+    #########################################################
+
+
+
